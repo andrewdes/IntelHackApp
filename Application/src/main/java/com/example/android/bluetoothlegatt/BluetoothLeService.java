@@ -29,6 +29,7 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -151,10 +152,11 @@ public class BluetoothLeService extends Service {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
                 for(byte byteChar : data)
                     stringBuilder.append(String.format("%02X ", byteChar));
-                intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
-                Log.d(TAG,"VAL:" + Integer.parseInt(stringBuilder.toString().trim(),16));
+
+                intent.putExtra(EXTRA_DATA, String.valueOf(Integer.parseInt(stringBuilder.toString().trim(),16)));
             }
         }
+
         sendBroadcast(intent);
     }
 
