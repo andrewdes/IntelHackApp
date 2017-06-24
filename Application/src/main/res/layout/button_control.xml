@@ -25,9 +25,22 @@
         android:id="@+id/button"
         android:onClick="onClickRead" />
 
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="tempRead"
+        android:text="Button" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/no_data"
         android:id="@+id/data_value" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Temperature:" />
 </LinearLayout>
