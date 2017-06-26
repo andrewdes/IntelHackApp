@@ -25,12 +25,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
@@ -38,6 +40,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Handler;
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
@@ -64,6 +67,9 @@ public class DeviceControlActivity extends Activity {
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
+
+    private EditText hText;
+    private EditText mText;
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -163,6 +169,8 @@ public class DeviceControlActivity extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
+
 
     }
 
@@ -318,9 +326,23 @@ public class DeviceControlActivity extends Activity {
     }
 
     public void tempRead(View v){
+
         if(mBluetoothLeService != null) {
            mBluetoothLeService.readCustomCharacteristic(1);
         }
+    }
+
+    public void setTimeActivity(View v){
+        setContentView(R.layout.set_time);
+    }
+
+    public void sendTime(View v){
+
+        hText = (EditText) findViewById(R.id.hour);
+        mText = (EditText) findViewById(R.id.minute);
+
+        Log.d(TAG, hText.getText().toString());
+        Log.d(TAG, mText.getText().toString());
     }
 
 
