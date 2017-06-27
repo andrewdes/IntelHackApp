@@ -309,13 +309,13 @@ public class DeviceControlActivity extends Activity {
 
     public void onClickWrite(View v){
         if(mBluetoothLeService != null) {
-            mBluetoothLeService.writeCustomCharacteristic(0x11);
+            mBluetoothLeService.writeCustomCharacteristic(0x11,0);
         }
     }
 
     public void onShutOff(View v){
         if(mBluetoothLeService != null) {
-            mBluetoothLeService.writeCustomCharacteristic(0x00);
+            mBluetoothLeService.writeCustomCharacteristic(0x00,0);
         }
     }
 
@@ -341,8 +341,12 @@ public class DeviceControlActivity extends Activity {
         hText = (EditText) findViewById(R.id.hour);
         mText = (EditText) findViewById(R.id.minute);
 
-        Log.d(TAG, hText.getText().toString());
-        Log.d(TAG, mText.getText().toString());
+        String hour = hText.getText().toString();
+        String minute = mText.getText().toString();
+
+        if(mBluetoothLeService != null) {
+            mBluetoothLeService.writeCustomCharacteristic(Integer.parseInt(hour),1);
+        }
     }
 
 
