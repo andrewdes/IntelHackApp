@@ -329,6 +329,7 @@ public class DeviceControlActivity extends Activity {
 
         if(mBluetoothLeService != null) {
            mBluetoothLeService.readCustomCharacteristic(1);
+           mBluetoothLeService.readCustomCharacteristic(2);
         }
     }
 
