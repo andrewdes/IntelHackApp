@@ -344,9 +344,25 @@ public class DeviceControlActivity extends Activity {
         String hour = hText.getText().toString();
         String minute = mText.getText().toString();
 
-        if(mBluetoothLeService != null) {
-            mBluetoothLeService.writeCustomCharacteristic(Integer.parseInt(hour),1);
+        if(validInt(hour,10) && 0 < Integer.parseInt(hour) &&Integer.parseInt(hour) < 13){
+            if (mBluetoothLeService != null) {
+                mBluetoothLeService.writeCustomCharacteristic(Integer.parseInt(hour), 1);
+            }
+        }else {
+
         }
+    }
+
+    private static boolean validInt(String s, int radix) {
+        if(s.isEmpty()) return false;
+        for(int i = 0; i < s.length(); i++) {
+            if(i == 0 && s.charAt(i) == '-') {
+                if(s.length() == 1) return false;
+                else continue;
+            }
+            if(Character.digit(s.charAt(i),radix) < 0) return false;
+        }
+        return true;
     }
 
 
