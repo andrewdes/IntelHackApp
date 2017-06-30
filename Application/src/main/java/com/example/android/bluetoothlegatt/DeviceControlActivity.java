@@ -344,12 +344,21 @@ public class DeviceControlActivity extends Activity {
         String hour = hText.getText().toString();
         String minute = mText.getText().toString();
 
-        if(validInt(hour,10) && 0 < Integer.parseInt(hour) &&Integer.parseInt(hour) < 13){
+        if(validInt(hour,10) && 0 < Integer.parseInt(hour) && Integer.parseInt(hour) < 13){
             if (mBluetoothLeService != null) {
                 mBluetoothLeService.writeCustomCharacteristic(Integer.parseInt(hour), 1);
             }
-        }else {
+        }
+        try {
+            Thread.sleep(200);
+        }catch(Exception e){
 
+        }
+
+        if(validInt(minute,10) && 0 <= Integer.parseInt(minute) && Integer.parseInt(minute) < 60){
+            if (mBluetoothLeService != null) {
+                mBluetoothLeService.writeCustomCharacteristic(Integer.parseInt(minute), 2);
+            }
         }
     }
 
