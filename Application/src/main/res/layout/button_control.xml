@@ -59,7 +59,7 @@
         android:id="@+id/setTimeBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Set Time"
+        android:text="@string/setDT"
         android:onClick="setTimeActivity"
         android:layout_marginRight="7dp"
         app:layout_constraintRight_toRightOf="parent"

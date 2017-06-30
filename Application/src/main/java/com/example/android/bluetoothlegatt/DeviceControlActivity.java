@@ -17,6 +17,7 @@
 package com.example.android.bluetoothlegatt;
 
 import android.app.Activity;
+import android.app.TimePickerDialog;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
@@ -36,7 +37,9 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +51,8 @@ import java.util.logging.Handler;
  * communicates with {@code BluetoothLeService}, which in turn interacts with the
  * Bluetooth LE API.
  */
-public class DeviceControlActivity extends Activity {
+public class DeviceControlActivity extends Activity{
+
     private final static String TAG = DeviceControlActivity.class.getSimpleName();
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
@@ -338,42 +342,24 @@ public class DeviceControlActivity extends Activity {
 
     public void sendTime(View v){
 
-        hText = (EditText) findViewById(R.id.hour);
-        mText = (EditText) findViewById(R.id.minute);
+        TimePicker t = (TimePicker) findViewById(R.id.timePicker);
 
-        String hour = hText.getText().toString();
-        String minute = mText.getText().toString();
+        String hour = String.valueOf(t.getHour());
+        String minute = String.valueOf(t.getMinute());
 
-        if(validInt(hour,10) && 0 < Integer.parseInt(hour) && Integer.parseInt(hour) < 13){
-            if (mBluetoothLeService != null) {
-                mBluetoothLeService.writeCustomCharacteristic(Integer.parseInt(hour), 1);
-            }
+        if (mBluetoothLeService != null) {
+            mBluetoothLeService.writeCustomCharacteristic(Integer.parseInt(hour), 1);
         }
+
         try {
             Thread.sleep(200);
         }catch(Exception e){
 
         }
 
-        if(validInt(minute,10) && 0 <= Integer.parseInt(minute) && Integer.parseInt(minute) < 60){
-            if (mBluetoothLeService != null) {
-                mBluetoothLeService.writeCustomCharacteristic(Integer.parseInt(minute), 2);
-            }
+        if (mBluetoothLeService != null) {
+            mBluetoothLeService.writeCustomCharacteristic(Integer.parseInt(minute), 2);
         }
     }
-
-    private static boolean validInt(String s, int radix) {
-        if(s.isEmpty()) return false;
-        for(int i = 0; i < s.length(); i++) {
-            if(i == 0 && s.charAt(i) == '-') {
-                if(s.length() == 1) return false;
-                else continue;
-            }
-            if(Character.digit(s.charAt(i),radix) < 0) return false;
-        }
-        return true;
-    }
-
-
 
 }
