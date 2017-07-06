@@ -118,11 +118,12 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { CalendarScopes.CALENDAR_READONLY };
 
-    public String[] nEventName = new String[10];
     public String nEventStart;
     public String nEventYear;
     public String nEventMonth;
     public String nEventDay;
+
+    public int currentScreen = 0;
 
 
 
@@ -301,7 +302,14 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
                 mBluetoothLeService.disconnect();
                 return true;
             case android.R.id.home:
-                onBackPressed();
+                if (currentScreen == 0){
+                    onBackPressed();
+                }else if (currentScreen == 1){
+                    setContentView(R.layout.button_control);
+                    currentScreen = 0;
+                }
+
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -415,9 +423,11 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
 
     public void setTimeLayout(View v){
         setContentView(R.layout.set_time);
+        currentScreen = 1;
     }
     public void setDateLayout(View v){
         setContentView(R.layout.set_date);
+        currentScreen = 1;
     }
 
     public void sendTime(View v){
@@ -756,10 +766,6 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
                 mOutputText.setText("No results returned.");
             } else {
                 mOutputText.setText(TextUtils.join("\n", output));
-                Log.d("TEST", nEventYear);
-                Log.d("TEST", nEventMonth);
-                Log.d("TEST", nEventDay);
-                Log.d("TEST", nEventStart);
             }
         }
 
