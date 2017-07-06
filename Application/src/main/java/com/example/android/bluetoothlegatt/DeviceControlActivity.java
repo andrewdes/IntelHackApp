@@ -123,9 +123,6 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
     public String nEventMonth;
     public String nEventDay;
 
-    public int currentScreen = 0;
-
-
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -302,14 +299,7 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
                 mBluetoothLeService.disconnect();
                 return true;
             case android.R.id.home:
-                if (currentScreen == 0){
-                    onBackPressed();
-                }else if (currentScreen == 1){
-                    setContentView(R.layout.button_control);
-                    currentScreen = 0;
-                }
-
-
+                onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -408,12 +398,6 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
         }
     }
 
-    public void onClickRead(View v){
-        if(mBluetoothLeService != null) {
-            mBluetoothLeService.readCustomCharacteristic(0);
-        }
-    }
-
     public void tempRead(View v){
 
         if(mBluetoothLeService != null) {
@@ -423,11 +407,23 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
 
     public void setTimeLayout(View v){
         setContentView(R.layout.set_time);
-        currentScreen = 1;
     }
     public void setDateLayout(View v){
         setContentView(R.layout.set_date);
-        currentScreen = 1;
+    }
+
+    public void setEvent(int val){
+
+        if (mBluetoothLeService != null) {
+            mBluetoothLeService.writeCustomCharacteristic(val, 6);
+        }
+
+        try {
+            Thread.sleep(200);
+        }catch(Exception e){
+
+        }
+
     }
 
     public void sendTime(View v){
@@ -436,6 +432,8 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
 
         int hour = t.getHour();
         int minute = t.getMinute();
+
+        setEvent(0);
 
         if (mBluetoothLeService != null) {
             mBluetoothLeService.writeCustomCharacteristic(hour, 1);
@@ -459,6 +457,8 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
         int day = d.getDayOfMonth();
         int month = d.getMonth() + 1;
         int year = d.getYear() - 2000;
+
+        setEvent(0);
 
         if (mBluetoothLeService != null) {
             mBluetoothLeService.writeCustomCharacteristic(day, 3);
@@ -722,12 +722,11 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
          */
         private List<String> getDataFromApi() throws IOException {
 
-            int counter = 0;
-            // List the next 10 events from the primary calendar.
+            // List the next event from the primary calendar.
             DateTime now = new DateTime(System.currentTimeMillis());
             List<String> eventStrings = new ArrayList<String>();
             Events events = mService.events().list("primary")
-                    .setMaxResults(10)
+                    .setMaxResults(1)
                     .setTimeMin(now)
                     .setOrderBy("startTime")
                     .setSingleEvents(true)
@@ -746,9 +745,69 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
                 nEventMonth = start.toString().split("-")[1];
                 nEventDay = (start.toString().split("-")[2]).split("T")[0];
                 nEventStart = (start.toString().split("T")[1]).split("\\.")[0];
+
+                int nEventHour = Integer.parseInt(nEventStart.split(":")[0]);
+                int nEventMinute = Integer.parseInt(nEventStart.split(":")[1]);
+
+                Log.d("TEST", "getDataFromApi: " + nEventHour);
+                Log.d("TEST", "getDataFromApi: " + nEventMinute);
+
                 eventStrings.add(event.getSummary());
 
-        }
+                setEvent(1);
+
+                try {
+                    Thread.sleep(200);
+                }catch(Exception e){
+
+                }
+
+                if (mBluetoothLeService != null) {
+                    mBluetoothLeService.writeCustomCharacteristic(nEventHour, 1);
+                }
+
+                try {
+                    Thread.sleep(200);
+                }catch(Exception e){
+
+                }
+
+                if (mBluetoothLeService != null) {
+                    mBluetoothLeService.writeCustomCharacteristic(nEventMinute, 2);
+                }
+
+                try {
+                    Thread.sleep(200);
+                }catch(Exception e){
+
+                }
+
+                if (mBluetoothLeService != null) {
+                    mBluetoothLeService.writeCustomCharacteristic(Integer.parseInt(nEventDay), 3);
+                }
+
+                try {
+                    Thread.sleep(200);
+                }catch(Exception e){
+
+                }
+
+                if (mBluetoothLeService != null) {
+                    mBluetoothLeService.writeCustomCharacteristic(Integer.parseInt(nEventMonth), 4);
+                }
+
+                try {
+                    Thread.sleep(200);
+                }catch(Exception e){
+
+                }
+
+                if (mBluetoothLeService != null) {
+                    mBluetoothLeService.writeCustomCharacteristic(Integer.parseInt(nEventYear) - 2000, 5);
+                }
+
+
+            }
             return eventStrings;
         }
 
