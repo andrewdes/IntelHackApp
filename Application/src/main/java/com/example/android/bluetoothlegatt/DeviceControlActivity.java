@@ -17,6 +17,8 @@
 package com.example.android.bluetoothlegatt;
 
 import android.app.Activity;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
@@ -70,6 +72,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -122,6 +125,8 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
     public String nEventYear;
     public String nEventMonth;
     public String nEventDay;
+
+    private JobScheduler mJobScheduler;
 
 
     // Code to manage Service lifecycle.
@@ -384,6 +389,21 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         return intentFilter;
+    }
+
+    public void testing(View v){
+        ComponentName serviceName = new ComponentName(this, MyJobService.class);
+        JobInfo jobInfo = new JobInfo.Builder(1, serviceName)
+                .setMinimumLatency(10000)
+                .setOverrideDeadline(10010) // Remove comment for faster testing.
+                .build();
+
+        JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        int result = scheduler.schedule(jobInfo);
+        if (result == JobScheduler.RESULT_SUCCESS) {
+            Toast.makeText(this, "COMPLETE", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     public void onClickWrite(View v){
@@ -748,9 +768,6 @@ public class DeviceControlActivity extends Activity implements EasyPermissions.P
 
                 int nEventHour = Integer.parseInt(nEventStart.split(":")[0]);
                 int nEventMinute = Integer.parseInt(nEventStart.split(":")[1]);
-
-                Log.d("TEST", "getDataFromApi: " + nEventHour);
-                Log.d("TEST", "getDataFromApi: " + nEventMinute);
 
                 eventStrings.add(event.getSummary());
 
