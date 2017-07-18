@@ -380,6 +380,8 @@ public class BluetoothLeService extends Service {
                 break;
             case 5: uid = "19B10024-E8F2-537E-4F6C-D104768A1214";
                 break;
+            case 6: uid = "19B10005-E8F2-537E-4F6C-D104768A1214";
+                break;
             default: uid = "19B10001-E8F2-537E-4F6C-D104768A1214";
                 break;
         }
