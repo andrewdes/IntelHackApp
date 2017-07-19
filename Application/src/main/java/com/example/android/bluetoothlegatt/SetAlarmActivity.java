@@ -3,11 +3,13 @@ package com.example.android.bluetoothlegatt;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
@@ -41,12 +43,14 @@ public class SetAlarmActivity extends Activity {
         seconds = toSeconds(alarmHour, alarmMinute);
 
         //Get address
-        address = (EditText) findViewById(R.id.addressEditText);
+        //address = (EditText) findViewById(R.id.addressEditText);
         destination = address.getText().toString();
 
         new GetCoordinates().execute(destination.replace(" ", "+")); //Start asynchronous task (call API)
 
     }
+
+
 
     private int toSeconds(int h, int min){
         return((h*60*60) + (min*60));
@@ -105,8 +109,19 @@ public class SetAlarmActivity extends Activity {
                 int minutes = traffic / 60;
                 int hours = minutes / 60;
 
+                if(alarmMinute + (minutes%60) > 59){
+                    alarmHour += 1;
+                    alarmMinute = (alarmMinute + minutes%60) - 60;
+                }else{
+                    alarmMinute += minutes % 60;
+                }
+
+                if(alarmHour + hours > 24){
+                    alarmHour = (alarmHour + hours) - 24;
+                }
+
                 //Send time via BluetoothLE
-                DeviceControlActivity.sendAlarm(alarmHour + hours, alarmMinute + (minutes%60));
+                //DeviceControlActivity.sendAlarm(alarmHour + hours, alarmMinute);
 
                 stopActivity();
 

@@ -297,7 +297,7 @@ public class DeviceControlActivity extends Activity{
         }
     }
 
-    public static void sendAlarm(int hour, int minute){
+    public static void sendAlarm(int hour, int minute, int day, int month, int year){
 
         Calendar cal = Calendar.getInstance();
 
@@ -320,21 +320,21 @@ public class DeviceControlActivity extends Activity{
         sleep(200);
 
         if (mBluetoothLeService != null) {
-            mBluetoothLeService.writeCustomCharacteristic(cal.get(Calendar.DAY_OF_MONTH), 3);
+            mBluetoothLeService.writeCustomCharacteristic(day, 3);
         }
 
         sleep(200);
 
 
         if (mBluetoothLeService != null) {
-            mBluetoothLeService.writeCustomCharacteristic(cal.get(Calendar.MONTH) + 1, 4);
+            mBluetoothLeService.writeCustomCharacteristic(month, 4);
         }
 
         sleep(200);
 
 
         if (mBluetoothLeService != null) {
-            mBluetoothLeService.writeCustomCharacteristic(cal.get(Calendar.YEAR) - 2000, 5);
+            mBluetoothLeService.writeCustomCharacteristic(year, 5);
         }
 
 
