@@ -2,6 +2,7 @@ package com.example.android.bluetoothlegatt;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -14,11 +15,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Calendar;
 
 public class SetAlarmActivity extends Activity {
 
@@ -30,21 +34,32 @@ public class SetAlarmActivity extends Activity {
     private int alarmMinute;
     private int prepTime;
 
+    public boolean run = true;
+
+    private ProgressDialog p;
+    private int alarmCounter = 0;
+    private int progressCounter = 0;
+
     private String modeTransportation;
 
-    private boolean mon = false;
-    private boolean tues = false;
-    private boolean wed = false;
-    private boolean thurs = false;
-    private boolean fri = false;
-    private boolean sat = false;
-    private boolean sun = false;
+    //Sat = 0
+    //Fri = 6
+    private boolean[] days = {false,false,false,false,false,false,false};
+
+    private String success = "Alarm successfully set";
+    int toastDuration = Toast.LENGTH_SHORT;
+    private Toast toast;
+
+    private int currentDay;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_alarm);
+
+        Calendar c = Calendar.getInstance();
+        currentDay = c.get(Calendar.DAY_OF_WEEK);
 
 
     }
@@ -55,7 +70,7 @@ public class SetAlarmActivity extends Activity {
         EditText prep = (EditText) findViewById(R.id.preptimeEditText);
 
         //Time to add on
-        prepTime = Integer.parseInt(prep.getText().toString());
+        //prepTime = Integer.parseInt(prep.getText().toString());
 
         //Get time
         alarmHour = t.getHour();
@@ -68,7 +83,17 @@ public class SetAlarmActivity extends Activity {
         address = (EditText) findViewById(R.id.addressEditText);
         destination = address.getText().toString();
 
-        new GetCoordinates().execute(destination.replace(" ", "+")); //Start asynchronous task (call API)
+        for(int i = 0; i < days.length; i++){
+            if(days[i]){
+                alarmCounter++;
+                Log.d("HERE", "sendAlarm: " + daysToo(currentDay,i));
+                new GetCoordinates().execute(destination.replace(" ", "+")); //Start asynchronous task (call API)
+
+            }
+
+        }
+
+
 
     }
 
@@ -93,7 +118,6 @@ public class SetAlarmActivity extends Activity {
                 break;
         }
 
-        Log.d("HERE", "onRadioButtonClicked: " + modeTransportation);
     }
 
     /**
@@ -105,9 +129,9 @@ public class SetAlarmActivity extends Activity {
         ToggleButton t = (ToggleButton) findViewById(R.id.mondayToggle);
 
         if(t.isChecked()){
-            mon = true;
+            days[2] = true;
         }else{
-            mon = false;
+            days[2] = false;
         }
 
     }
@@ -121,9 +145,9 @@ public class SetAlarmActivity extends Activity {
         ToggleButton t = (ToggleButton) findViewById(R.id.tuesdayToggle);
 
         if(t.isChecked()){
-            tues = true;
+            days[3] = true;
         }else{
-            tues = false;
+            days[3] = false;
         }
 
     }
@@ -137,9 +161,9 @@ public class SetAlarmActivity extends Activity {
         ToggleButton t = (ToggleButton) findViewById(R.id.wednesdayToggle);
 
         if(t.isChecked()){
-            wed = true;
+            days[4] = true;
         }else{
-            wed = false;
+            days[4] = false;
         }
 
     }
@@ -153,9 +177,9 @@ public class SetAlarmActivity extends Activity {
         ToggleButton t = (ToggleButton) findViewById(R.id.thursdayToggle);
 
         if(t.isChecked()){
-            thurs = true;
+            days[5] = true;
         }else{
-            thurs = false;
+            days[5] = false;
         }
 
     }
@@ -169,9 +193,9 @@ public class SetAlarmActivity extends Activity {
         ToggleButton t = (ToggleButton) findViewById(R.id.fridayToggle);
 
         if(t.isChecked()){
-            fri = true;
+            days[6] = true;
         }else{
-            fri = false;
+            days[6] = false;
         }
 
     }
@@ -185,9 +209,9 @@ public class SetAlarmActivity extends Activity {
         ToggleButton t = (ToggleButton) findViewById(R.id.saturdayToggle);
 
         if(t.isChecked()){
-            sat = true;
+            days[0] = true;
         }else{
-            sat = false;
+            days[0] = false;
         }
 
     }
@@ -201,9 +225,9 @@ public class SetAlarmActivity extends Activity {
         ToggleButton t = (ToggleButton) findViewById(R.id.sundayToggle);
 
         if(t.isChecked()){
-            sun = true;
+            days[1] = true;
         }else{
-            sun = false;
+            days[1] = false;
         }
 
     }
@@ -218,16 +242,46 @@ public class SetAlarmActivity extends Activity {
         this.finish();
     }
 
-    private class GetCoordinates extends AsyncTask<String, Void, String> {
+    private int daysToo(int current, int day){
 
-        ProgressDialog pDialog = new ProgressDialog(SetAlarmActivity.this);
+        if(current == day){
+            return 0;
+        }
+
+        int counter = 0;
+
+        while(current != day){
+            if(current < 6) {
+                counter++;
+                current++;
+            }else{
+                current = 0;
+                counter++;
+            }
+        }
+
+        return counter;
+
+
+
+
+
+    }
+
+    private class GetCoordinates extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage("Please wait...");
-            pDialog.setCanceledOnTouchOutside(false);
-            pDialog.show();
+
+            if(progressCounter == 0){
+                p = new ProgressDialog(SetAlarmActivity.this);
+                p.setMessage("Gathering traffic data...");
+                p.setCanceledOnTouchOutside(false);
+                p.show();
+                progressCounter++;
+            }
+
         }
 
         @Override
@@ -243,7 +297,7 @@ public class SetAlarmActivity extends Activity {
                 HttpDataHandler http = new HttpDataHandler();
                 String url = String.format("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="
                         + origin +"&destinations=" + dest + "&departure_time=" + epoch + seconds
-                        + "&mode=" + modeTransportation +"&key=AIzaSyAe1KIAuVjYq6YCkeFbhZI5U9cy4IY6LF0");
+                        + "&mode=" + modeTransportation + "&traffic_model:best_guess" +"&key=AIzaSyAe1KIAuVjYq6YCkeFbhZI5U9cy4IY6LF0");
 
                 response = http.getHTTPData(url);
                 return response;
@@ -258,11 +312,14 @@ public class SetAlarmActivity extends Activity {
 
             try {
 
-                pDialog.cancel(); //cancel the progress dialog
 
                 JSONObject jobj = new JSONObject(s);
                 JSONArray resultsArray = jobj.getJSONArray("rows");
-                int traffic = resultsArray.getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("duration").getInt("value");
+                int traffic = resultsArray.getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("duration_in_traffic").getInt("value");
+
+
+                Log.d("HERE", "RETURNED: " + traffic);
+
 
                 int minutes = traffic / 60;
                 int hours = minutes / 60;
@@ -272,10 +329,17 @@ public class SetAlarmActivity extends Activity {
                     alarmMinute -= ((minutes%60) - prepTime) + 60;
                 }
 
+                progressCounter += 1;
+
+                if(progressCounter == (alarmCounter + 1)){
+                    p.cancel();
+                    stopActivity();
+                    toast.makeText(getApplicationContext(), success, toastDuration).show();
+                }
+
                 //Send time via BluetoothLE
                 //DeviceControlActivity.sendAlarm(alarmHour - hours, alarmMinute);
 
-                stopActivity();
 
             } catch (JSONException e) {
 
