@@ -34,6 +34,8 @@ public class SetAlarmActivity extends Activity {
     private int alarmMinute;
     private int prepTime;
 
+    private int secondsToAdd;
+
     public boolean run = true;
 
     private ProgressDialog p;
@@ -69,8 +71,7 @@ public class SetAlarmActivity extends Activity {
         TimePicker t = (TimePicker) findViewById(R.id.timePickerAlarm);
         EditText prep = (EditText) findViewById(R.id.preptimeEditText);
 
-        //Time to add on
-        //prepTime = Integer.parseInt(prep.getText().toString());
+        prepTime = toSeconds(0,Integer.parseInt((prep.getText().toString()).trim()));
 
         //Get time
         alarmHour = t.getHour();
@@ -86,9 +87,8 @@ public class SetAlarmActivity extends Activity {
         for(int i = 0; i < days.length; i++){
             if(days[i]){
                 alarmCounter++;
-                Log.d("HERE", "sendAlarm: " + daysToo(currentDay,i));
-                new GetCoordinates().execute(destination.replace(" ", "+")); //Start asynchronous task (call API)
-
+                secondsToAdd = 86400 * daysToo(currentDay,i);
+                new GetCoordinates().execute(destination.replace(" ", "+"), (Integer.toString(secondsToAdd)), Integer.toString(i)); //Start asynchronous task (call API)
             }
 
         }
@@ -238,6 +238,14 @@ public class SetAlarmActivity extends Activity {
         return((h*60*60) + (min*60));
     }
 
+    private int toMinutes(int s){
+        return ((s/60)%60);
+    }
+
+    private int toHours(int s){
+        return (s/3600);
+    }
+
     private void stopActivity(){
         this.finish();
     }
@@ -290,13 +298,13 @@ public class SetAlarmActivity extends Activity {
             String response;
             String dest = strings[0];
 
-            origin = "test address";
+            origin = "1754+Woodview+Avenue+Pickering+ontario";
             long epoch = System.currentTimeMillis()/1000; //used for traffic prediction
 
             try {
                 HttpDataHandler http = new HttpDataHandler();
                 String url = String.format("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="
-                        + origin +"&destinations=" + dest + "&departure_time=" + epoch + seconds
+                        + origin +"&destinations=" + dest + "&departure_time=" + (epoch + seconds + Integer.parseInt(strings[1]))
                         + "&mode=" + modeTransportation + "&traffic_model:best_guess" +"&key=AIzaSyAe1KIAuVjYq6YCkeFbhZI5U9cy4IY6LF0");
 
                 response = http.getHTTPData(url);
@@ -319,15 +327,11 @@ public class SetAlarmActivity extends Activity {
 
 
                 Log.d("HERE", "RETURNED: " + traffic);
+                Log.d("HERE", "onPostExecute: H: " + toHours(seconds-traffic-prepTime) + "M: " + toMinutes(seconds-traffic-prepTime));
 
 
-                int minutes = traffic / 60;
-                int hours = minutes / 60;
 
-                while(alarmMinute - (minutes%60) - prepTime < 0){
-                    alarmHour -= 1;
-                    alarmMinute -= ((minutes%60) - prepTime) + 60;
-                }
+
 
                 progressCounter += 1;
 
