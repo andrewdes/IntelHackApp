@@ -33,6 +33,7 @@ public class SetAlarmActivity extends Activity {
     private int alarmHour;
     private int alarmMinute;
     private int prepTime;
+    private int traffic;
 
     private int secondsToAdd;
 
@@ -71,7 +72,12 @@ public class SetAlarmActivity extends Activity {
         TimePicker t = (TimePicker) findViewById(R.id.timePickerAlarm);
         EditText prep = (EditText) findViewById(R.id.preptimeEditText);
 
-        prepTime = toSeconds(0,Integer.parseInt((prep.getText().toString()).trim()));
+        //If preptime box is left blank, assume no preptime
+        if(prep.getText().toString().trim().equals("")){
+            prepTime = 0;
+        }else {
+            prepTime = toSeconds(0, Integer.parseInt((prep.getText().toString()).trim()));
+        }
 
         //Get time
         alarmHour = t.getHour();
@@ -321,15 +327,28 @@ public class SetAlarmActivity extends Activity {
             try {
 
 
+
                 JSONObject jobj = new JSONObject(s);
-                JSONArray resultsArray = jobj.getJSONArray("rows");
-                int traffic = resultsArray.getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("duration_in_traffic").getInt("value");
+
+                if(jobj.get("status").equals("OK")) {
+
+                    if(modeTransportation.equals("driving")) {
+
+                        JSONArray resultsArray = jobj.getJSONArray("rows");
+                        traffic = resultsArray.getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("duration_in_traffic").getInt("value");
+
+                    }else{
+                        traffic = 0;
+                    }
+
+                    Log.d("HERE", "RETURNED: " + traffic);
+                    Log.d("HERE", "onPostExecute: H: " + toHours(seconds - traffic - prepTime) + "M: " + toMinutes(seconds - traffic - prepTime));
 
 
-                Log.d("HERE", "RETURNED: " + traffic);
-                Log.d("HERE", "onPostExecute: H: " + toHours(seconds-traffic-prepTime) + "M: " + toMinutes(seconds-traffic-prepTime));
+                    //Send time via BluetoothLE
+                    //DeviceControlActivity.sendAlarm(alarmHour - hours, alarmMinute);
 
-
+                }
 
 
 
@@ -340,10 +359,6 @@ public class SetAlarmActivity extends Activity {
                     stopActivity();
                     toast.makeText(getApplicationContext(), success, toastDuration).show();
                 }
-
-                //Send time via BluetoothLE
-                //DeviceControlActivity.sendAlarm(alarmHour - hours, alarmMinute);
-
 
             } catch (JSONException e) {
 
