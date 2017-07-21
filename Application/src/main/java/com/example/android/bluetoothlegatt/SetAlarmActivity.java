@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -22,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Wrapper;
 import java.util.Calendar;
 
 public class SetAlarmActivity extends Activity {
@@ -42,7 +44,7 @@ public class SetAlarmActivity extends Activity {
     private ProgressDialog p;
     private int alarmCounter = 0;
     private int progressCounter = 0;
-
+    private boolean selected = false;
     private String modeTransportation;
 
     //Sat = 0
@@ -50,6 +52,7 @@ public class SetAlarmActivity extends Activity {
     private boolean[] days = {false,false,false,false,false,false,false};
 
     private String success = "Alarm successfully set";
+    private String selectDays = "Please select at least one day!";
     int toastDuration = Toast.LENGTH_SHORT;
     private Toast toast;
 
@@ -71,6 +74,8 @@ public class SetAlarmActivity extends Activity {
 
         TimePicker t = (TimePicker) findViewById(R.id.timePickerAlarm);
         EditText prep = (EditText) findViewById(R.id.preptimeEditText);
+
+
 
         //If preptime box is left blank, assume no preptime
         if(prep.getText().toString().trim().equals("")){
@@ -95,9 +100,14 @@ public class SetAlarmActivity extends Activity {
                 alarmCounter++;
                 secondsToAdd = 86400 * daysToo(currentDay,i);
                 new GetCoordinates().execute(destination.replace(" ", "+"), (Integer.toString(secondsToAdd)), Integer.toString(i)); //Start asynchronous task (call API)
+                selected = true;
             }
 
         }
+
+        if(!selected)
+            toast.makeText(getApplicationContext(), selectDays, toastDuration).show();
+
 
 
 
@@ -282,7 +292,7 @@ public class SetAlarmActivity extends Activity {
 
     }
 
-    private class GetCoordinates extends AsyncTask<String, Void, String> {
+    private class GetCoordinates extends AsyncTask<String, Void, Wrapper> {
 
         @Override
         protected void onPreExecute() {
@@ -299,7 +309,7 @@ public class SetAlarmActivity extends Activity {
         }
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected Wrapper doInBackground(String... strings) {
 
             String response;
             String dest = strings[0];
@@ -314,7 +324,12 @@ public class SetAlarmActivity extends Activity {
                         + "&mode=" + modeTransportation + "&traffic_model:best_guess" +"&key=AIzaSyAe1KIAuVjYq6YCkeFbhZI5U9cy4IY6LF0");
 
                 response = http.getHTTPData(url);
-                return response;
+
+                Wrapper w = new Wrapper();
+                w.googleResult = response;
+                w.currentDayToSend = Integer.parseInt(strings[2]);
+
+                return w;
             } catch (Exception e) {
                 return null;
             }
@@ -322,11 +337,12 @@ public class SetAlarmActivity extends Activity {
         }
 
 
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(Wrapper w) {
 
             try {
 
-
+                String s = w.googleResult;
+                int day = w.currentDayToSend;
 
                 JSONObject jobj = new JSONObject(s);
 
@@ -343,11 +359,17 @@ public class SetAlarmActivity extends Activity {
 
                     Log.d("HERE", "RETURNED: " + traffic);
                     Log.d("HERE", "onPostExecute: H: " + toHours(seconds - traffic - prepTime) + "M: " + toMinutes(seconds - traffic - prepTime));
+                    Log.d("HERE", "RETURNED: " + day);
 
+
+
+
+                }else{
+                    traffic = 0;
+                    int alarmTimeSec = seconds - traffic - prepTime;
 
                     //Send time via BluetoothLE
-                    //DeviceControlActivity.sendAlarm(alarmHour - hours, alarmMinute);
-
+                    DeviceControlActivity.sendAlarm(toHours(alarmTimeSec), toMinutes(alarmTimeSec), day);
                 }
 
 
@@ -368,5 +390,11 @@ public class SetAlarmActivity extends Activity {
         }
 
 
+    }
+
+
+    public class Wrapper{
+        public String googleResult;
+        public int currentDayToSend;
     }
 }
