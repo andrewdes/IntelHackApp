@@ -361,17 +361,15 @@ public class SetAlarmActivity extends Activity {
                     Log.d("HERE", "onPostExecute: H: " + toHours(seconds - traffic - prepTime) + "M: " + toMinutes(seconds - traffic - prepTime));
                     Log.d("HERE", "RETURNED: " + day);
 
-
-
-
                 }else{
                     traffic = 0;
-                    int alarmTimeSec = seconds - traffic - prepTime;
-
-                    //Send time via BluetoothLE
-                    DeviceControlActivity.sendAlarm(toHours(alarmTimeSec), toMinutes(alarmTimeSec), day);
                 }
 
+                int alarmTimeSec = seconds - traffic - prepTime;
+
+                Log.d("HERE", "onPostExecute: " + day);
+                //Send time via BluetoothLE
+                DeviceControlActivity.sendAlarm(toHours(alarmTimeSec), toMinutes(alarmTimeSec), day);
 
 
                 progressCounter += 1;

@@ -297,14 +297,9 @@ public class DeviceControlActivity extends Activity{
         }
     }
 
-    public static void sendAlarm(int hour, int minute, int day, int month, int year){
+    public static void sendAlarm(int hour, int minute, int day){
 
-        Calendar cal = Calendar.getInstance();
-
-        setEvent(1);
-
-        sleep(200);
-
+        setEvent(day + 2);
 
         if (mBluetoothLeService != null) {
             mBluetoothLeService.writeCustomCharacteristic(hour, 1);
@@ -319,23 +314,6 @@ public class DeviceControlActivity extends Activity{
 
         sleep(200);
 
-        if (mBluetoothLeService != null) {
-            mBluetoothLeService.writeCustomCharacteristic(day, 3);
-        }
-
-        sleep(200);
-
-
-        if (mBluetoothLeService != null) {
-            mBluetoothLeService.writeCustomCharacteristic(month, 4);
-        }
-
-        sleep(200);
-
-
-        if (mBluetoothLeService != null) {
-            mBluetoothLeService.writeCustomCharacteristic(year, 5);
-        }
 
 
     }
@@ -348,10 +326,6 @@ public class DeviceControlActivity extends Activity{
         }
     }
 
-    public  void googleServices(View v){
-
-
-    }
 
 }
 

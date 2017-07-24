@@ -28,26 +28,28 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="-12dp" />
 
     <ToggleButton
         android:id="@+id/sundayToggle"
         android:layout_width="38dp"
+        android:onClick="sundayClicked"
         android:layout_height="43dp"
         android:text="ToggleButton"
         android:textOff="@string/sat"
         android:textOn="@string/sat"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="0dp"
         app:layout_constraintTop_toBottomOf="@+id/timePickerAlarm"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="12dp" />
+        android:layout_marginLeft="16dp" />
 
     <ToggleButton
         android:id="@+id/saturdayToggle"
         android:layout_width="38dp"
         android:layout_height="43dp"
+        android:onClick="saturdayClicked"
         android:layout_marginLeft="12dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="0dp"
         android:text="ToggleButton"
         android:textOff="@string/sat"
         android:textOn="@string/sat"
@@ -57,9 +59,10 @@
     <ToggleButton
         android:id="@+id/fridayToggle"
         android:layout_width="38dp"
+        android:onClick="fridayClicked"
         android:layout_height="43dp"
         android:layout_marginLeft="12dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="0dp"
         android:text="ToggleButton"
         android:textOff="@string/fri"
         android:textOn="@string/fri"
@@ -70,8 +73,9 @@
         android:id="@+id/thursdayToggle"
         android:layout_width="38dp"
         android:layout_height="43dp"
+        android:onClick="thursdayClicked"
         android:layout_marginLeft="12dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="0dp"
         android:text="ToggleButton"
         android:textOff="@string/tues"
         android:textOn="@string/tues"
@@ -81,9 +85,10 @@
     <ToggleButton
         android:id="@+id/wednesdayToggle"
         android:layout_width="38dp"
+        android:onClick="wednesdayClicked"
         android:layout_height="43dp"
         android:layout_marginLeft="12dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="0dp"
         android:text="ToggleButton"
         android:textOff="@string/wed"
         android:textOn="@string/wed"
@@ -93,9 +98,10 @@
     <ToggleButton
         android:id="@+id/tuesdayToggle"
         android:layout_width="38dp"
+        android:onClick="tuesdayClicked"
         android:layout_height="43dp"
-        android:layout_marginLeft="14dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="0dp"
         android:text="ToggleButton"
         android:textOff="@string/tues"
         android:textOn="@string/tues"
@@ -106,8 +112,9 @@
         android:id="@+id/mondayToggle"
         android:layout_width="38dp"
         android:layout_height="43dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="0dp"
         android:text="ToggleButton"
+        android:onClick="mondayClicked"
         android:textOff="@string/mon"
         android:textOn="@string/mon"
         app:layout_constraintTop_toBottomOf="@+id/timePickerAlarm"
@@ -115,7 +122,7 @@
         android:layout_marginLeft="12dp" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/addressEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -137,7 +144,71 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintTop_toBottomOf="@+id/wednesdayToggle" />
+
+    <RadioGroup
+        android:layout_width="325dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/addressEditText"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.186"
+        android:id="@+id/radioGroup">
+
+
+        <RadioButton
+            android:id="@+id/driving"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/driving"
+            android:onClick="onRadioButtonClicked"/>
+
+        <RadioButton
+            android:id="@+id/transit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="7dp"
+            android:text="@string/transit"
+            android:onClick="onRadioButtonClicked"/>
+
+        <RadioButton
+            android:id="@+id/walking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/walking"
+            android:onClick="onRadioButtonClicked"/>
+
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/preptimeEditText"
+        android:layout_width="68dp"
+        android:layout_height="38dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:layout_marginTop="31dp"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        android:layout_marginRight="12dp"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/preptimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/prepTime"
+        android:layout_marginTop="43dp"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        app:layout_constraintRight_toLeftOf="@+id/preptimeEditText"
+        android:layout_marginRight="0dp" />
 
 </android.support.constraint.ConstraintLayout>
