@@ -246,6 +246,10 @@ public class DeviceControlActivity extends Activity{
         Intent i = new Intent(this, SetAlarmActivity.class);
         startActivity(i);
     }
+    public void setColorActivity(View v){
+        Intent i = new Intent(this, ColorActivity.class);
+        startActivity(i);
+    }
 
     public static void setEvent(int val) {
 
@@ -273,6 +277,28 @@ public class DeviceControlActivity extends Activity{
         }
     }
 
+    public static void sendColor(int r, int g, int b){
+
+
+        if (mBluetoothLeService != null) {
+            mBluetoothLeService.writeCustomCharacteristic(r , 3);
+        }
+
+        sleep(200);
+
+
+        if (mBluetoothLeService != null) {
+            mBluetoothLeService.writeCustomCharacteristic(g, 4);
+        }
+
+        sleep(200);
+
+
+        if (mBluetoothLeService != null) {
+            mBluetoothLeService.writeCustomCharacteristic(g,7);
+        }
+
+    }
 
     public static void sendDate(int day, int month, int year){
 
