@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.AsyncTask;
+import android.support.v13.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +23,10 @@ import android.widget.RadioGroup;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,6 +67,12 @@ public class SetAlarmActivity extends Activity {
 
     private int currentDay;
 
+    private double locationLongitude;
+    private double locationLatitude;
+
+
+    private FusedLocationProviderClient fusedLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +82,28 @@ public class SetAlarmActivity extends Activity {
         Calendar c = Calendar.getInstance();
         currentDay = c.get(Calendar.DAY_OF_WEEK);
 
+        fusedLocation = LocationServices.getFusedLocationProviderClient(this);
+
+        //try getting users location
+        try {
+            fusedLocation.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                            }
+
+                            locationLatitude = location.getLatitude();
+                            locationLongitude = location.getLongitude();
+
+                        }
+                    });
+        }catch(SecurityException e){
+            Toast t = new Toast(getApplicationContext());
+            t.makeText(getApplicationContext(), "Error getting current location", toastDuration).show();
+
+        }
 
     }
 
@@ -315,14 +351,13 @@ public class SetAlarmActivity extends Activity {
             String response;
             String dest = strings[0];
 
-            origin = "1754+Woodview+Avenue+Pickering+ontario";
             long epoch = System.currentTimeMillis()/1000; //used for traffic prediction
 
             if(!dest.equals("")) {
                 try {
                     HttpDataHandler http = new HttpDataHandler();
                     String url = String.format("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="
-                            + origin + "&destinations=" + dest + "&departure_time=" + (epoch + seconds + Integer.parseInt(strings[1]))
+                            + locationLatitude + "," + locationLongitude + "&destinations=" + dest + "&departure_time=" + (epoch + seconds + Integer.parseInt(strings[1]))
                             + "&mode=" + modeTransportation + "&traffic_model:best_guess" + "&key=AIzaSyAe1KIAuVjYq6YCkeFbhZI5U9cy4IY6LF0");
 
                     response = http.getHTTPData(url);
