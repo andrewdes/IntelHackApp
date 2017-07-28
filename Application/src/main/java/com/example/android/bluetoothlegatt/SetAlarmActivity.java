@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -388,6 +389,16 @@ public class SetAlarmActivity extends Activity {
         }
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                this.finish(); //finish activity when back is clicked (preserves connection)
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
@@ -26,5 +27,15 @@ public class SetDateActivity extends Activity {
         //Finish activity
         this.finish();
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                this.finish(); //finish activity when back is clicked (preserves connection)
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

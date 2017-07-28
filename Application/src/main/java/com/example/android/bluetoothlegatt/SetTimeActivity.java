@@ -4,6 +4,8 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TimePicker;
 
@@ -25,5 +27,15 @@ public class SetTimeActivity extends Activity {
         //Finish activity
         this.finish();
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                this.finish(); //finish activity when back is clicked (preserves connection)
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

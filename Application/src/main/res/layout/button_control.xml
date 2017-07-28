@@ -12,10 +12,10 @@
         android:text="@string/LedOn"
         android:id="@+id/button2"
         android:onClick="onClickWrite"
-        android:layout_marginLeft="112dp"
+        android:layout_marginLeft="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="111dp" />
+        android:layout_marginTop="16dp" />
 
     <Button
         android:id="@+id/button3"
@@ -26,20 +26,21 @@
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="111dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintLeft_toRightOf="@+id/button2"
         android:layout_marginLeft="8dp"
-        app:layout_constraintHorizontal_bias="0.173" />
+        app:layout_constraintHorizontal_bias="0.022" />
 
     <Button
         android:id="@+id/updateBtn"
+        android:background="@drawable/button"
         android:layout_width="64dp"
         android:layout_height="wrap_content"
         android:onClick="tempRead"
         android:text="@string/update"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginTop="75dp"
+        android:layout_marginRight="84dp"
         app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
@@ -47,63 +48,81 @@
         android:layout_height="wrap_content"
         android:text="@string/no_data"
         android:id="@+id/data_value"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="75dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="271dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp" />
 
     <Button
         android:id="@+id/setTimeBtn"
+        android:background="@drawable/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/setTime"
         android:onClick="setTimeActivity"
-        android:layout_marginRight="7dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="128dp"
-        app:layout_constraintTop_toBottomOf="@+id/data_value" />
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/setAlarm"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
         android:id="@+id/setDateBtn"
         android:onClick="setDateActivity"
         android:layout_width="wrap_content"
+        android:background="@drawable/button"
         android:layout_height="wrap_content"
         android:text="@string/dateBtn"
-        android:layout_marginTop="13dp"
-        app:layout_constraintTop_toBottomOf="@+id/setTimeBtn"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="8dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/nm"
+        android:layout_marginRight="24dp"
         app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/setAlarm"
         android:layout_width="wrap_content"
+        android:background="@drawable/button"
         android:onClick="setAlarmActivity"
         android:layout_height="wrap_content"
         android:text="@string/setAlarm"
-        android:layout_marginBottom="14dp"
-        app:layout_constraintBottom_toTopOf="@+id/setTimeBtn"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintHorizontal_bias="0.501" />
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
-        android:onClick="googleServices"
-        android:layout_marginLeft="8dp"
+        android:background="@drawable/button"
+        android:text="@string/cp"
+        android:onClick="setColorActivity"
+        android:layout_marginLeft="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="64dp" />
+
+    <Button
+        android:id="@+id/nm"
+        android:background="@drawable/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nm"
+        android:onClick="setNightModeActivity"
+        android:layout_marginRight="24dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/tempRead" />
+
+    <Button
+        android:id="@+id/tempRead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/temp"
+        android:onClick="tempRead"
+        android:background="@drawable/button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="64dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

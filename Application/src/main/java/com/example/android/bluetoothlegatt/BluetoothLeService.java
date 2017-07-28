@@ -157,7 +157,6 @@ public class BluetoothLeService extends Service {
                 for(byte byteChar : data)
                     stringBuilder.append(String.format("%02X ", byteChar));
 
-
                 intent.putExtra(EXTRA_DATA, String.valueOf(Integer.parseInt(stringBuilder.toString().trim(),16)));
 
             }
@@ -381,6 +380,10 @@ public class BluetoothLeService extends Service {
             case 5: uid = "19B10024-E8F2-537E-4F6C-D104768A1214";
                 break;
             case 6: uid = "19B10005-E8F2-537E-4F6C-D104768A1214";
+                break;
+            case 7: uid = "19B10002-E8F2-537E-4F6C-D104768A1214";
+                break;
+            case 8: uid = "19B10006-E8F2-537E-4F6C-D104768A1214";
                 break;
             default: uid = "19B10001-E8F2-537E-4F6C-D104768A1214";
                 break;

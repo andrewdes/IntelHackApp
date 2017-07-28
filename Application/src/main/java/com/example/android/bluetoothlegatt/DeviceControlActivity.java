@@ -17,30 +17,19 @@
 package com.example.android.bluetoothlegatt;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Calendar;
 
 
 /**
@@ -63,11 +52,6 @@ public class DeviceControlActivity extends Activity{
 
     private boolean mConnected = false;
 
-    public String nEventStart;
-    public String nEventYear;
-    public String nEventMonth;
-    public String nEventDay;
-
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -80,6 +64,7 @@ public class DeviceControlActivity extends Activity{
             }
             // Automatically connects to the device upon successful start-up initialization.
             mBluetoothLeService.connect(mDeviceAddress);
+
         }
 
         @Override
@@ -122,8 +107,6 @@ public class DeviceControlActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.button_control);
 
-
-
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
@@ -133,10 +116,6 @@ public class DeviceControlActivity extends Activity{
         getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-
-
-
-
     }
 
     @Override
@@ -229,9 +208,7 @@ public class DeviceControlActivity extends Activity{
 
     public void tempRead(View v){
 
-        if(mBluetoothLeService != null) {
-           mBluetoothLeService.readCustomCharacteristic(1);
-        }
+
     }
 
     public void setTimeActivity(View v){
@@ -248,6 +225,10 @@ public class DeviceControlActivity extends Activity{
     }
     public void setColorActivity(View v){
         Intent i = new Intent(this, ColorActivity.class);
+        startActivity(i);
+    }
+    public void setNightModeActivity(View v){
+        Intent i = new Intent(this, NightMode.class);
         startActivity(i);
     }
 
@@ -295,7 +276,7 @@ public class DeviceControlActivity extends Activity{
 
 
         if (mBluetoothLeService != null) {
-            mBluetoothLeService.writeCustomCharacteristic(b,7);
+            mBluetoothLeService.writeCustomCharacteristic(b,8);
         }
 
     }
@@ -341,6 +322,25 @@ public class DeviceControlActivity extends Activity{
         sleep(200);
 
 
+
+    }
+
+    public static void sendNightMode(int hour, int minute, int event){
+
+        setEvent(event);
+
+        if (mBluetoothLeService != null) {
+            mBluetoothLeService.writeCustomCharacteristic(hour, 1);
+        }
+
+        sleep(200);
+
+
+        if (mBluetoothLeService != null) {
+            mBluetoothLeService.writeCustomCharacteristic(minute, 2);
+        }
+
+        sleep(200);
 
     }
 

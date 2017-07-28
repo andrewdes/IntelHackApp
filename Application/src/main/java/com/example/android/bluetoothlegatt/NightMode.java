@@ -2,6 +2,7 @@ package com.example.android.bluetoothlegatt;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -41,5 +42,15 @@ public class NightMode extends Activity {
 
         this.finish();
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                this.finish(); //finish activity when back is clicked (preserves connection)
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
