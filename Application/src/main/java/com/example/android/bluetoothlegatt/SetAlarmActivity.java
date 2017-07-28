@@ -318,22 +318,33 @@ public class SetAlarmActivity extends Activity {
             origin = "1754+Woodview+Avenue+Pickering+ontario";
             long epoch = System.currentTimeMillis()/1000; //used for traffic prediction
 
-            try {
-                HttpDataHandler http = new HttpDataHandler();
-                String url = String.format("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="
-                        + origin +"&destinations=" + dest + "&departure_time=" + (epoch + seconds + Integer.parseInt(strings[1]))
-                        + "&mode=" + modeTransportation + "&traffic_model:best_guess" +"&key=AIzaSyAe1KIAuVjYq6YCkeFbhZI5U9cy4IY6LF0");
+            if(!dest.equals("")) {
+                try {
+                    HttpDataHandler http = new HttpDataHandler();
+                    String url = String.format("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="
+                            + origin + "&destinations=" + dest + "&departure_time=" + (epoch + seconds + Integer.parseInt(strings[1]))
+                            + "&mode=" + modeTransportation + "&traffic_model:best_guess" + "&key=AIzaSyAe1KIAuVjYq6YCkeFbhZI5U9cy4IY6LF0");
 
-                response = http.getHTTPData(url);
+                    response = http.getHTTPData(url);
 
+                    Wrapper w = new Wrapper();
+                    w.googleResult = response;
+                    w.currentDayToSend = Integer.parseInt(strings[2]);
+
+                    return w;
+                } catch (Exception e) {
+                    return null;
+                }
+            }else{
                 Wrapper w = new Wrapper();
-                w.googleResult = response;
+                w.googleResult = "{\"status\" : \"FAILED\"}";
                 w.currentDayToSend = Integer.parseInt(strings[2]);
 
                 return w;
-            } catch (Exception e) {
-                return null;
+
             }
+
+
 
         }
 
